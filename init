@@ -1,0 +1,63 @@
+int layerCount = 2;
+int[] layerImageCount = {1, 10};
+int[] showIndex = new int[layerImageCount.length];
+ArrayList<PImage> loadImages = new ArrayList<PImage>();
+PImage[] shownImages = new PImage[layerImageCount.length];
+int frameRateNum = 5;
+
+void setup(){
+  size(1600, 1600);
+  for (int i = 0; i < layerCount; i++){
+    for (int j = 0; j < layerImageCount[i]; j++){
+      String text = "layer" + i + "image" + j + ".png";
+      loadImages.add( loadImage(text));
+    }
+  }
+  int sumImg = 0;
+  for (int i = 0; i < shownImages.length; i++){
+    if (i > 0){
+      for (int j = 0; j < i; j++){
+        sumImg += layerImageCount[j];
+      }
+      println(sumImg);
+    }
+    showIndex[i] = sumImg;
+    println("showIndex" + i + ": " + showIndex[i]);
+    shownImages[i] = loadImages.get(sumImg);
+  }
+  frameRate(frameRateNum);
+}
+void draw(){
+  for (int i = 0; i < shownImages.length; i++){
+    image(shownImages[i], 0, 0);
+  }
+  for (int i = 0; i < shownImages.length; i++){
+    if (showIndex[i] == layerImageCount[i]){
+      println("i: " +i);
+      println("showIndex: " + showIndex[i]);
+      println("layerImageCount[i]: " +layerImageCount[i]);
+      showIndex[i] = showIndex[i] - layerImageCount[i];
+      
+      println(showIndex[i] - layerImageCount[i]);
+    }else{
+      showIndex[i]++;
+    }
+    //println("showIndex: ", showIndex[i], " i:" , i);
+    shownImages[i] = loadImages.get(showIndex[i]);
+  }
+}
+
+
+void keyReleased(){
+  if (key == 'a'){
+    if (frameRateNum != 1){
+      frameRateNum--;
+    }
+    frameRate(frameRateNum);
+  }
+  
+  if (key == 'd'){
+    frameRateNum++;
+    frameRate(frameRateNum);
+  }
+}
